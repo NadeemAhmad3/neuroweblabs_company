@@ -11,7 +11,6 @@ export async function POST(req: Request) {
     
     // Parse normal fields
     const trackName = formData.get("trackName") as string;
-    const selectedTier = formData.get("selectedTier") as string;
     const firstName = formData.get("firstName") as string;
     const lastName = formData.get("lastName") as string;
     const email = formData.get("email") as string;
@@ -52,8 +51,6 @@ export async function POST(req: Request) {
 
     const application = new Application({
       trackName,
-      selectedTier,
-      price: selectedTier === "premium" ? 500 : 0, // Assuming 500 is the premium default
       firstName,
       lastName,
       email,
@@ -76,7 +73,6 @@ export async function POST(req: Request) {
       firstName,
       lastName,
       trackName,
-      selectedTier,
     }).catch((emailError) => {
       console.error("Failed to send application confirmation email:", emailError);
     });

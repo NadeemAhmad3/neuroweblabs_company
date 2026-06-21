@@ -2,20 +2,23 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { CheckCircle, Loader2 } from "lucide-react";
+import { CheckCircle, XCircle, Loader2 } from "lucide-react";
 
 export default function AcceptButton({ applicationId, currentStatus }: { applicationId: string; currentStatus?: string }) {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState(currentStatus);
   const router = useRouter();
 
-  const normalizedStatus = (status ?? "").trim().toLowerCase();
-  const isApproved = normalizedStatus === "approved" || normalizedStatus === "accepted";
+  const isSelected = status === "Selected";
 
-  const handleAccept = async () => {
-    if (isApproved || loading) return;
+  const handleToggleStatus = async (newStatus: "Selected" | "Unselected") => {
+    if (loading) return;
 
-    if (!confirm("Are you sure you want to accept this candidate? This will immediately send an acceptance email.")) {
+    const confirmMessage = newStatus === "Selected"
+      ? "Are you sure you want to select this candidate? This will immediately send an acceptance email."
+      : "Are you sure you want to unselect this candidate?";
+
+    if (!confirm(confirmMessage)) {
       return;
     }
 
@@ -23,49 +26,50 @@ export default function AcceptButton({ applicationId, currentStatus }: { applica
     try {
       const res = await fetch(`/api/admin/applications/${applicationId}/accept`, {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status: newStatus }),
       });
 
       if (!res.ok) {
         const errorData = await res.json().catch(() => null);
-
-        // If backend says it is already approved, sync UI immediately.
-        if (res.status === 400 && errorData?.message === "Application already approved") {
-          setStatus("Approved");
-          router.refresh();
-          return;
-        }
-
-        throw new Error(errorData?.message || "Failed to accept application");
+        throw new Error(errorData?.message || "Failed to update candidate status");
       }
 
       const data = await res.json();
-      setStatus("Approved");
-      alert(data.message || "Candidate successfully approved!");
+      setStatus(newStatus);
+      alert(data.message || `Candidate successfully marked as ${newStatus}!`);
       router.refresh();
     } catch (error) {
       console.error(error);
-      alert("An error occurred while accepting the candidate.");
+      alert(error instanceof Error ? error.message : "An error occurred while updating status.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <button 
-      onClick={handleAccept}
-      disabled={isApproved || loading}
-      className={`inline-flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold shadow-sm transition-all ${
-        isApproved 
-          ? 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 shadow-none cursor-not-allowed' 
-          : 'bg-white border border-[var(--color-islamabad-border)] text-emerald-600 hover:bg-emerald-500 hover:text-white hover:border-emerald-500 shadow-[var(--shadow-luxury)]'
-      }`}
-    >
-      {loading ? (
-        <Loader2 size={18} className="animate-spin" />
+    <div className="flex items-center gap-3">
+      {isSelected ? (
+        <button 
+          onClick={() => handleToggleStatus("Unselected")}
+          disabled={loading}
+          className="inline-flex items-center gap-2 px-6 py-2.5 bg-rose-50 border border-rose-200 text-rose-600 hover:bg-rose-500 hover:text-white hover:border-rose-500 rounded-xl text-sm font-bold shadow-sm transition-all"
+        >
+          {loading ? <Loader2 size={18} className="animate-spin" /> : <XCircle size={18} />}
+          Unselect Candidate
+        </button>
       ) : (
-        <CheckCircle size={18} />
+        <button 
+          onClick={() => handleToggleStatus("Selected")}
+          disabled={loading}
+          className="inline-flex items-center gap-2 px-6 py-2.5 bg-white border border-[var(--color-islamabad-border)] text-emerald-600 hover:bg-emerald-500 hover:text-white hover:border-emerald-500 rounded-xl text-sm font-bold shadow-[var(--shadow-luxury)] transition-all"
+        >
+          {loading ? <Loader2 size={18} className="animate-spin" /> : <CheckCircle size={18} />}
+          Select Candidate
+        </button>
       )}
-      {isApproved ? "Approved & Emailed" : "Accept Candidate"}
-    </button>
+    </div>
   );
 }

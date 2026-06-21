@@ -21,7 +21,7 @@ interface Slide {
 const slides: Slide[] = [
   {
     id: 0,
-    image: "/company1.png",
+    image: "/company1.jpg",
     eyebrow: "Web Architecture",
     headline: ["Scalable", "digital", "products", "built", "to", "last."],
     description:
@@ -34,7 +34,7 @@ const slides: Slide[] = [
   },
   {
     id: 1,
-    image: "/company2.png",
+    image: "/company2.jpg",
     eyebrow: "Artificial Intelligence",
     headline: ["Intelligence", "that", "works", "for", "you."],
     description:

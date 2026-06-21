@@ -178,7 +178,7 @@ export default function Capabilities() {
                   className={`relative h-full rounded-3xl border transition-all duration-500 overflow-hidden ${
                     isHovered
                       ? "border-[var(--color-islamabad-accent)]/30 bg-[var(--color-islamabad-primary)] shadow-luxury"
-                      : "border-[var(--color-islamabad-border)] bg-white hover:shadow-lg"
+                      : "border-slate-200/80 bg-white shadow-[0_8px_30px_rgba(0,0,0,0.02)] hover:shadow-xl"
                   }`}
                 >
                   {/* Subtle Top Gradient Line */}
@@ -198,14 +198,14 @@ export default function Capabilities() {
                         className={`p-3.5 rounded-2xl transition-all duration-500 ${
                           isHovered
                             ? "bg-[var(--color-islamabad-accent)] text-white shadow-md"
-                            : "bg-[var(--color-islamabad-bg)] text-[var(--color-islamabad-primary)]"
+                            : "bg-[var(--color-islamabad-accent)]/10 text-[var(--color-islamabad-accent)]"
                         }`}
                       >
                         <Icon size={24} strokeWidth={1.5} />
                       </div>
                       <span
                         className={`text-[11px] font-mono tracking-[0.15em] transition-colors duration-500 ${
-                          isHovered ? "text-white/40" : "text-[var(--color-islamabad-border)]"
+                          isHovered ? "text-white/40" : "text-[var(--color-islamabad-accent)]/60"
                         }`}
                       >
                         {cap.eyebrow}
@@ -215,7 +215,7 @@ export default function Capabilities() {
                     {/* Title */}
                     <h3
                       className={`font-[family-name:var(--font-plus-jakarta)] text-xl lg:text-2xl font-extrabold tracking-tight leading-[1.15] mb-4 transition-colors duration-500 ${
-                        isHovered ? "text-white" : "text-[var(--color-islamabad-primary)]"
+                        isHovered ? "text-white" : "text-slate-900"
                       }`}
                     >
                       {cap.title}
@@ -224,7 +224,7 @@ export default function Capabilities() {
                     {/* Description */}
                     <p
                       className={`text-sm leading-relaxed font-light mb-8 flex-1 transition-colors duration-500 ${
-                        isHovered ? "text-white/60" : "text-[var(--color-islamabad-secondary)]"
+                        isHovered ? "text-white/60" : "text-slate-600"
                       }`}
                     >
                       {cap.description}
@@ -238,7 +238,7 @@ export default function Capabilities() {
                           className={`text-[10px] font-semibold px-2.5 py-1 rounded-full uppercase tracking-wider transition-all duration-500 ${
                             isHovered
                               ? "bg-white/10 text-white/60 border border-white/10"
-                              : "bg-[var(--color-islamabad-bg)] text-[var(--color-islamabad-secondary)] border border-[var(--color-islamabad-border)]"
+                              : "bg-slate-50 text-slate-600 border border-slate-200/60"
                           }`}
                         >
                           {tag}
@@ -248,19 +248,19 @@ export default function Capabilities() {
 
                     {/* Bottom row */}
                     <div className="flex items-center justify-between pt-6 border-t border-dashed transition-colors duration-500"
-                      style={{ borderColor: isHovered ? "rgba(255,255,255,0.1)" : "var(--color-islamabad-border)" }}
+                      style={{ borderColor: isHovered ? "rgba(255,255,255,0.1)" : "rgba(226,232,240,0.8)" }}
                     >
                       <div>
                         <span
                           className={`block text-lg font-extrabold font-[family-name:var(--font-plus-jakarta)] transition-colors duration-500 ${
-                            isHovered ? "text-white" : "text-[var(--color-islamabad-primary)]"
+                            isHovered ? "text-white" : "text-[var(--color-islamabad-accent)]"
                           }`}
                         >
                           {cap.metric.split(" ")[0]}
                         </span>
                         <span
                           className={`text-[10px] font-semibold uppercase tracking-[0.15em] transition-colors duration-500 ${
-                            isHovered ? "text-white/40" : "text-[var(--color-islamabad-secondary)]"
+                            isHovered ? "text-white/40" : "text-slate-500"
                           }`}
                         >
                           {cap.metric.split(" ").slice(1).join(" ")}
@@ -272,7 +272,7 @@ export default function Capabilities() {
                         className={`flex items-center justify-center w-10 h-10 rounded-full transition-all duration-500 ${
                           isHovered
                             ? "bg-[var(--color-islamabad-accent)] text-white shadow-md"
-                            : "bg-[var(--color-islamabad-bg)] text-[var(--color-islamabad-secondary)]"
+                            : "bg-slate-50 text-slate-500 hover:bg-[var(--color-islamabad-accent)]/10 hover:text-[var(--color-islamabad-accent)]"
                         }`}
                       >
                         <ArrowUpRight size={16} />

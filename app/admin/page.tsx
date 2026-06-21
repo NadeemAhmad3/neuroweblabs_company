@@ -1,6 +1,6 @@
 import connectToDatabase from "@/lib/mongodb";
 import Application from "@/models/Application";
-import { Users, CreditCard, Activity, ArrowUpRight, TrendingUp, Inbox } from "lucide-react";
+import { Users, CheckCircle2, AlertCircle, TrendingUp, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 
 export const revalidate = 0; // Disable static caching for admin
@@ -12,7 +12,7 @@ type ApplicationRecord = {
   email: string;
   trackName: string;
   university: string;
-  selectedTier: string;
+  status: string;
   createdAt: string | Date;
 };
 
@@ -20,13 +20,14 @@ export default async function AdminDashboard() {
   await connectToDatabase();
   const applications = await Application.find().sort({ createdAt: -1 }).limit(6).lean();
   const totalApps = await Application.countDocuments();
-  const premiumApps = await Application.countDocuments({ selectedTier: "premium" });
+  const selectedApps = await Application.countDocuments({ status: "Selected" });
+  const pendingApps = await Application.countDocuments({ status: "Pending" });
   
   const metrics = [
     { label: "Total Applications", value: totalApps, icon: Users, change: "+12%", trend: "up", boxColor: "bg-[var(--color-islamabad-primary)]", iconColor: "text-[var(--color-islamabad-bg)]" },
-    { label: "Premium (Pro Tier)", value: premiumApps, icon: CreditCard, change: "+5%", trend: "up", boxColor: "bg-[var(--color-islamabad-accent)]/10 text-[var(--color-islamabad-accent)]", iconColor: "text-[var(--color-islamabad-accent)]" },
-    { label: "Standard (Free)", value: totalApps - premiumApps, icon: Inbox, change: "-2%", trend: "down", boxColor: "bg-[var(--color-islamabad-secondary)]/10 text-[var(--color-islamabad-primary)]", iconColor: "text-[var(--color-islamabad-secondary)]" },
-    { label: "Conversion Rate", value: totalApps ? Math.round((premiumApps / totalApps) * 100) + "%" : "0%", icon: Activity, change: "+3%", trend: "up", boxColor: "bg-[var(--color-islamabad-bg)] border border-[var(--color-islamabad-border)]", iconColor: "text-[var(--color-islamabad-primary)]" }
+    { label: "Selected Candidates", value: selectedApps, icon: CheckCircle2, change: "+8%", trend: "up", boxColor: "bg-emerald-500/10 text-emerald-600 border border-emerald-500/20", iconColor: "text-emerald-600" },
+    { label: "Pending Candidates", value: pendingApps, icon: AlertCircle, change: "-3%", trend: "down", boxColor: "bg-amber-500/10 text-amber-600 border border-amber-500/20", iconColor: "text-amber-600" },
+    { label: "Selection Rate", value: totalApps ? Math.round((selectedApps / totalApps) * 100) + "%" : "0%", icon: TrendingUp, change: "+2%", trend: "up", boxColor: "bg-[var(--color-islamabad-bg)] border border-[var(--color-islamabad-border)]", iconColor: "text-[var(--color-islamabad-primary)]" }
   ];
 
   return (
@@ -58,12 +59,12 @@ export default async function AdminDashboard() {
           const Icon = metric.icon;
           return (
             <div key={i} className="bg-white rounded-3xl p-6 border border-[var(--color-islamabad-border)] shadow-[var(--shadow-luxury)] relative overflow-hidden group">
-              <div className="flex justify-between items-start mb-6 z-10 relative">
+               <div className="flex justify-between items-start mb-6 z-10 relative">
                 <div className={`p-3 rounded-2xl ${metric.boxColor} transition-transform group-hover:scale-110 duration-300`}>
                   <Icon size={24} className={metric.iconColor} />
                 </div>
-                <div className={`flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-full ${metric.trend === 'up' ? 'text-[var(--color-islamabad-accent)] bg-[var(--color-islamabad-accent)]/10' : 'text-red-500 bg-red-500/10'}`}>
-                  {metric.trend === 'up' ? <TrendingUp size={12} /> : <TrendingUp size={12} className="rotate-180" />}
+                <div className="flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-full text-[var(--color-islamabad-accent)] bg-[var(--color-islamabad-accent)]/10">
+                  <TrendingUp size={12} />
                   {metric.change}
                 </div>
               </div>
@@ -97,14 +98,15 @@ export default async function AdminDashboard() {
               <tr className="bg-[var(--color-islamabad-bg)] text-[var(--color-islamabad-secondary)] text-xs uppercase tracking-wider">
                 <th className="px-8 py-4 font-semibold rounded-tl-3xl">Candidate</th>
                 <th className="px-8 py-4 font-semibold">Track & Role</th>
-                <th className="px-8 py-4 font-semibold">Tier</th>
+                <th className="px-8 py-4 font-semibold">Status</th>
                 <th className="px-8 py-4 font-semibold text-right rounded-tr-3xl">Action</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[var(--color-islamabad-border)]/50">
               {applications.length > 0 ? applications.map((app: ApplicationRecord) => {
                 const application = app;
-                const isPro = application.selectedTier === "premium";
+                const isApproved = (application.status ?? "").toLowerCase() === "selected";
+                const isUnselected = (application.status ?? "").toLowerCase() === "unselected";
                 return (
                   <tr key={application._id.toString()} className="hover:bg-[var(--color-islamabad-bg)]/50 transition-colors group">
                     <td className="px-8 py-5">
@@ -123,9 +125,14 @@ export default async function AdminDashboard() {
                       <p className="text-xs text-[var(--color-islamabad-secondary)]">{application.university}</p>
                     </td>
                     <td className="px-8 py-5">
-                      <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${isPro ? 'bg-[var(--color-islamabad-accent)]/10 text-[var(--color-islamabad-accent)] border border-[var(--color-islamabad-accent)]/20' : 'bg-[var(--color-islamabad-bg)] text-[var(--color-islamabad-secondary)] border border-[var(--color-islamabad-border)]'}`}>
-                        {isPro && <Activity size={12} />}
-                        {isPro ? "Pro Tier" : "Standard"}
+                      <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${
+                        isApproved 
+                          ? 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20' 
+                          : isUnselected
+                            ? 'bg-rose-500/10 text-rose-600 border border-rose-500/20'
+                            : 'bg-amber-500/10 text-amber-600 border border-amber-500/20'
+                      }`}>
+                        {application.status || "Pending"}
                       </span>
                     </td>
                     <td className="px-8 py-5 text-right">

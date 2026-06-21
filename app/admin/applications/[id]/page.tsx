@@ -3,7 +3,6 @@ import Link from "next/link";
 import connectToDatabase from "@/lib/mongodb";
 import Application from "@/models/Application";
 import AcceptButton from "@/components/admin/AcceptButton";
-import PaymentManager from "./PaymentManager";
 import { ArrowLeft, ArrowUpRight, UserCircle, Briefcase, GraduationCap, MapPin, Mail, Phone, Github, Linkedin, FileText, Download, Activity, CalendarDays, Calendar } from "lucide-react";
 
 export const revalidate = 0;
@@ -26,22 +25,13 @@ export default async function ApplicationDetailPage({ params }: { params: Promis
     return notFound();
   }
 
-  // Ensure case-insensitivity on tier
-  const isPro = application.selectedTier?.toLowerCase() === "premium";
   const normalizedStatus = (application.status ?? "").trim().toLowerCase();
-  const isApproved = normalizedStatus === "approved" || normalizedStatus === "accepted";
+  const isApproved = normalizedStatus === "selected";
 
   // Handle Photo URI format
   let photoDataUri = null;
   if (application.photo && application.photo.data) {
     photoDataUri = `data:${application.photo.contentType};base64,${application.photo.data}`;
-  }
-
-  // Calculate days since acceptance
-  let daysSinceAcceptance = 0;
-  if (isApproved && application.acceptedAt) {
-    const diffTime = Math.abs(new Date().getTime() - new Date(application.acceptedAt).getTime());
-    daysSinceAcceptance = Math.floor(diffTime / (1000 * 60 * 60 * 24)); 
   }
 
   return (
@@ -68,29 +58,7 @@ export default async function ApplicationDetailPage({ params }: { params: Promis
         <div className="flex flex-col gap-3">
           <div className="flex gap-3">
             <AcceptButton applicationId={id} currentStatus={application.status} />
-            
-            <span className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold shadow-sm ${
-              isPro 
-                ? 'bg-[var(--color-islamabad-accent)] text-white shadow-[var(--color-islamabad-accent)]/20' 
-                : 'bg-white border border-[var(--color-islamabad-border)] text-[var(--color-islamabad-primary)]'
-            }`}>
-              {isPro && <Activity size={16} />}
-              {isPro ? "Premium Candidate" : "Standard Tier"}
-            </span>
           </div>
-
-          {/* Payment Section */}
-          {isApproved && isPro && (
-            <div className="mt-2 bg-white p-4 rounded-xl border border-[var(--color-islamabad-border)] shadow-sm">
-               <h3 className="text-sm font-bold text-[var(--color-islamabad-primary)] mb-2">Financial Status</h3>
-               <PaymentManager 
-                  id={id} 
-                  paymentStatus={application.paymentStatus} 
-                  price={application.price}
-                  daysSinceAcceptance={daysSinceAcceptance}
-                />
-            </div>
-          )}
         </div>
       </div>
 
@@ -101,7 +69,7 @@ export default async function ApplicationDetailPage({ params }: { params: Promis
           {/* Identity Card */}
           <div className="bg-white rounded-3xl p-6 md:p-8 border border-[var(--color-islamabad-border)] shadow-[var(--shadow-luxury)] relative overflow-hidden text-center flex flex-col items-center">
             {/* Background Accent */}
-            <div className={`absolute top-0 left-0 w-full h-32 ${isPro ? 'bg-gradient-to-br from-[var(--color-islamabad-accent)]/20 to-[var(--color-islamabad-primary)]/5' : 'bg-[var(--color-islamabad-bg)]'} border-b border-[var(--color-islamabad-border)]`} />
+            <div className="absolute top-0 left-0 w-full h-32 bg-[var(--color-islamabad-bg)] border-b border-[var(--color-islamabad-border)]" />
 
             <div className="relative z-10">
               <div className="w-28 h-28 mx-auto bg-white rounded-2xl shadow-xl shadow-[var(--color-islamabad-primary)]/10 border-4 border-white overflow-hidden flex items-center justify-center mb-4">

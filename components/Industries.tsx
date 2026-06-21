@@ -21,7 +21,7 @@ const industries = [
     icon: Landmark,
     metric: "$2B+",
     metricLabel: "Transactions",
-    image: "/industry1.png",
+    image: "/industry1.jpg",
   },
   {
     id: "healthcare",
@@ -30,7 +30,7 @@ const industries = [
     icon: HeartPulse,
     metric: "50+",
     metricLabel: "Partners",
-    image: "/industry2.png",
+    image: "/industry2.jpg",
   },
   {
     id: "ecommerce",
@@ -39,7 +39,7 @@ const industries = [
     icon: ShoppingCart,
     metric: "300%",
     metricLabel: "Revenue Lift",
-    image: "/industry3.png",
+    image: "/industry3.jpg",
   },
   {
     id: "realestate",
@@ -48,7 +48,7 @@ const industries = [
     icon: Building2,
     metric: "10K+",
     metricLabel: "Properties",
-    image: "/industry4.png",
+    image: "/industry4.jpg",
   },
 ];
 

@@ -2,7 +2,6 @@ import mongoose, { Schema, Document } from "mongoose";
 
 export interface IApplication extends Document {
   trackName: string;
-  selectedTier: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -24,16 +23,13 @@ export interface IApplication extends Document {
   experience: string;
   motivation: string;
   status: string;
-  paymentStatus: string;
   acceptedAt?: Date;
-  price: number;
   createdAt: Date;
 }
 
 const ApplicationSchema: Schema = new Schema(
   {
     trackName: { type: String, required: true },
-    selectedTier: { type: String, required: true },
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
     email: { type: String, required: true },
@@ -55,9 +51,7 @@ const ApplicationSchema: Schema = new Schema(
     experience: { type: String, required: true },
     motivation: { type: String, required: true },
     status: { type: String, default: "Pending" },
-    paymentStatus: { type: String, default: "Unpaid" },
     acceptedAt: { type: Date },
-    price: { type: Number, default: 0 },
   },
   { timestamps: true }
 );

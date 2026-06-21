@@ -1,21 +1,21 @@
 "use client";
 
 import { motion, Variants } from "framer-motion";
-import { ArrowRight, Code, Database, BrainCircuit, Bot, Terminal, CloudCog, MonitorSmartphone, CheckCircle2, ScanEye } from "lucide-react";
+import { ArrowRight, Code, Database, BrainCircuit, LineChart,Bot, Terminal, CloudCog, MonitorSmartphone, CheckCircle2, ScanEye } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Link from "next/link";
 
 const programs = [
   {
-    title: "AI & Data Engineering",
-    icon: <BrainCircuit size={24} className="text-[var(--color-islamabad-accent)]" />,
-    image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=800",
-    description: "Build robust data pipelines, implement machine learning algorithms, and develop scalable advanced analytics systems for business insights.",
-    tags: ["Python", "Pandas", "Scikit"],
-    type: "Remote / Hybrid",
-    duration: "3-6 Months"
-  },
+  title: "Data Science & Analytics",
+  icon: <LineChart size={24} className="text-[var(--color-islamabad-accent)]" />, 
+  image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800",
+  description: "Master exploratory data analysis, apply statistical techniques, and build predictive machine learning models to extract actionable insights from complex datasets.",
+  tags: ["Python", "Machine Learning", "SQL"],
+  type: "Remote / Hybrid",
+  duration: "3-6 Months"
+},
   {
     title: "Generative AI",
     icon: <Bot size={24} className="text-[var(--color-islamabad-accent)]" />,
@@ -26,68 +26,15 @@ const programs = [
     duration: "3-6 Months"
   },
   {
-    title: "Computer Vision",
-    icon: <ScanEye size={24} className="text-[var(--color-islamabad-accent)]" />,
-    image: "https://images.unsplash.com/photo-1555949963-aa79dcee981c?auto=format&fit=crop&q=80&w=800",
-    description: "Develop facial recognition, object detection, and visual tracking pipelines. Deploy deep learning models that process real-time video and image streams.",
-    tags: ["OpenCV", "YOLO", "PyTorch Vision"],
-    type: "Remote / Hybrid",
-    duration: "3-6 Months"
-  },
-  {
-    title: "Full-Stack AI Engineering",
+    title: "Full-Stack AI Development",
     icon: <Code size={24} className="text-[var(--color-islamabad-accent)]" />,
     image: "https://images.unsplash.com/photo-1555066931-bf19f8fd1085?auto=format&fit=crop&q=80&w=800",
     description: "Merge AI with modern web architecture. Build full-stack solutions with Redux state management, secure firewalls, and deeply integrated AI inferences.",
-    tags: ["React/Redux", "Node.js", "AI Integrations"],
-    type: "Remote / Hybrid",
-    duration: "3-6 Months"
-  },
-  {
-    title: "Frontend Engineering",
-    icon: <MonitorSmartphone size={24} className="text-[var(--color-islamabad-accent)]" />,
-    image: "https://images.unsplash.com/photo-1581276879432-15e50529f34b?auto=format&fit=crop&q=80&w=800",
-    description: "Craft stunning, high-performance, pixel-perfect user interfaces and highly interactive digital web experiences from the ground up.",
-    tags: ["React", "Next.js", "Tailwind"],
-    type: "Remote / Hybrid",
-    duration: "3-6 Months"
-  },
-  {
-    title: "Backend Engineering",
-    icon: <Database size={24} className="text-[var(--color-islamabad-accent)]" />,
-    image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800",
-    description: "Design secure, robust, and scalable server-side architectures, API microservices, and massive databases built for scale.",
-    tags: ["Node.js", "Python", "SQL/NoSQL"],
-    type: "Remote / Hybrid",
-    duration: "3-6 Months"
-  },
-  {
-    title: "Cloud Infrastructure",
-    icon: <CloudCog size={24} className="text-[var(--color-islamabad-accent)]" />,
-    image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800",
-    description: "Deploy, manage, and scale secure cloud architecture, server provisioning, load balancing, and network security policies.",
-    tags: ["AWS", "Azure", "GCP"],
-    type: "Remote / Hybrid",
-    duration: "3-6 Months"
-  },
-  {
-    title: "DevOps & CI/CD",
-    icon: <Terminal size={24} className="text-[var(--color-islamabad-accent)]" />,
-    image: "https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?auto=format&fit=crop&q=80&w=800",
-    description: "Master modern software pipelines. Automate continuous integration testing and continuous deployment to ensure flawless enterprise releases.",
-    tags: ["Docker", "Kubernetes", "Actions"],
-    type: "Remote / Hybrid",
-    duration: "3-6 Months"
-  },
-  {
-    title: "Mobile Development",
-    icon: <MonitorSmartphone size={24} className="text-[var(--color-islamabad-accent)]" />,
-    image: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&q=80&w=800",
-    description: "Deliver fluid, high-conversion native and cross-platform mobile apps optimized for performance, security, and seamless user experiences on iOS and Android.",
-    tags: ["React Native", "Swift", "Kotlin"],
+    tags: ["React/Next.js", "Node.js/Python", "AI Integrations"],
     type: "Remote / Hybrid",
     duration: "3-6 Months"
   }
+  
 ];
 
 const perks = [
@@ -105,7 +52,7 @@ export default function InternshipsPage() {
       <Navbar />
 
       {/* Internship Tracks - Direct Start */}
-      <section className="w-full pt-36 md:pt-48 pb-24 border-b border-[var(--color-islamabad-border)]">
+      <section id="programs" className="w-full pt-36 md:pt-48 pb-24 border-b border-[var(--color-islamabad-border)]">
         <div className="w-full max-w-[1400px] mx-auto px-6 lg:px-8 2xl:px-16">
           <div className="flex flex-col mb-16 text-center md:text-left md:items-start items-center">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold font-[family-name:var(--font-plus-jakarta)] tracking-tight mb-4 text-[var(--color-islamabad-primary)]">
@@ -232,7 +179,7 @@ export default function InternshipsPage() {
             Submit your resume, portfolio, or GitHub profile. Let&apos;s see what you can do.
           </p>
           <Link 
-            href="/contact" 
+            href="#programs" 
             className="inline-flex items-center gap-2 px-8 py-4 rounded-full text-lg font-bold text-white bg-[var(--color-islamabad-primary)] transition-all duration-300 hover:bg-[var(--color-islamabad-accent)] hover:shadow-xl hover:shadow-[var(--color-islamabad-accent)]/20 hover:-translate-y-1"
           >
             Apply Now

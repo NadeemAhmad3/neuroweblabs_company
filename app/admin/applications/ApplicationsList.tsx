@@ -12,7 +12,6 @@ type AppRecord = {
   email: string;
   trackName: string;
   university: string;
-  selectedTier: string;
   status: string;
   createdAt: string;
 };
@@ -78,7 +77,6 @@ export default function ApplicationsList({ initialApplications }: { initialAppli
               <tr className="bg-[var(--color-islamabad-bg)] text-[var(--color-islamabad-secondary)] text-xs uppercase tracking-wider border-b border-[var(--color-islamabad-border)]">
                 <th className="px-8 py-4 font-semibold">Candidate Info</th>
                 <th className="px-8 py-4 font-semibold">Target Track</th>
-                <th className="px-8 py-4 font-semibold">Tier Level</th>
                 <th className="px-8 py-4 font-semibold">Status</th>
                 <th className="px-8 py-4 font-semibold text-right">View Data</th>
               </tr>
@@ -86,8 +84,8 @@ export default function ApplicationsList({ initialApplications }: { initialAppli
             <tbody className="divide-y divide-[var(--color-islamabad-border)]/50">
               <AnimatePresence>
                 {filteredApps.length > 0 ? filteredApps.map((app) => {
-                  const isPro = app.selectedTier === "premium";
-                  const isApproved = (app.status ?? "").toLowerCase() === "approved" || (app.status ?? "").toLowerCase() === "accepted";
+                  const isApproved = (app.status ?? "").toLowerCase() === "selected";
+                  const isUnselected = (app.status ?? "").toLowerCase() === "unselected";
                   
                   return (
                     <motion.tr 
@@ -117,22 +115,13 @@ export default function ApplicationsList({ initialApplications }: { initialAppli
                       
                       <td className="px-8 py-5">
                         <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${
-                          isPro 
-                            ? 'bg-[var(--color-islamabad-accent)]/10 text-[var(--color-islamabad-accent)] border border-[var(--color-islamabad-accent)]/20' 
-                            : 'bg-white border border-[var(--color-islamabad-border)] text-[var(--color-islamabad-secondary)]'
-                        }`}>
-                          {isPro ? <Activity size={12} /> : <Inbox size={12} />}
-                          {isPro ? "Pro Tier" : "Standard"}
-                        </span>
-                      </td>
-
-                      <td className="px-8 py-5">
-                        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${
                           isApproved 
                             ? 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20' 
-                            : 'bg-amber-500/10 text-amber-600 border border-amber-500/20'
+                            : isUnselected
+                              ? 'bg-rose-500/10 text-rose-600 border border-rose-500/20'
+                              : 'bg-amber-500/10 text-amber-600 border border-amber-500/20'
                         }`}>
-                          {isApproved ? "Approved" : app.status || "Pending"}
+                          {app.status || "Pending"}
                         </span>
                       </td>
                       

@@ -13,6 +13,9 @@ export async function POST(
 ) {
   try {
     const { id } = await params;
+    const body = await req.json().catch(() => ({}));
+    const statusToSet = body.status === "Unselected" ? "Unselected" : "Selected";
+
     await connectToDatabase();
 
     const application = await Application.findById(id).lean();
@@ -21,11 +24,8 @@ export async function POST(
       return NextResponse.json({ message: "Application not found" }, { status: 404 });
     }
 
-    const currentStatus = (application.status || "").toLowerCase();
-    const isAlreadyApproved = currentStatus === "approved" || currentStatus === "accepted";
-
-    if (isAlreadyApproved) {
-      return NextResponse.json({ message: "Application already approved", status: application.status }, { status: 400 });
+    if (application.status === statusToSet) {
+      return NextResponse.json({ message: `Application already ${statusToSet}`, status: application.status }, { status: 400 });
     }
 
     // HARD UPDATE using native MongoDB driver via Mongoose connection
@@ -37,14 +37,17 @@ export async function POST(
     
     const collection = db.collection("applications");
 
+    const updateFields: any = { status: statusToSet };
+    if (statusToSet === "Selected") {
+      updateFields.acceptedAt = new Date();
+    } else {
+      updateFields.acceptedAt = null;
+    }
+
     const writeResult = await collection.updateOne(
       { _id: new mongoose.Types.ObjectId(id) },
       {
-        $set: {
-          status: "Approved",
-          paymentStatus: "Unpaid",
-          acceptedAt: new Date(),
-        },
+        $set: updateFields,
       }
     );
 
@@ -53,42 +56,39 @@ export async function POST(
     // If nothing was modified, surface that clearly
     if (writeResult.matchedCount === 0) {
       console.error("No document matched for status update. ID:", id);
-      return NextResponse.json({ message: "Failed to approve application: not found during update" }, { status: 500 });
+      return NextResponse.json({ message: "Failed to update status: not found during update" }, { status: 500 });
     }
-
-    // We know DB now has Approved/Unpaid; reflect that in the response payload
-    const updatedStatus = "Approved";
-    const updatedPaymentStatus = "Unpaid";
 
     // 🚀 NEW: Tell Next.js to immediately purge the cache for these pages!
     revalidatePath(`/admin/applications`);
     revalidatePath(`/admin/applications/${id}`);
 
-    // Send the acceptance email (Includes logic inside based on Tier)
-    try {
-      await sendAcceptanceEmail({
-        to: application.email,
-        firstName: application.firstName,
-        lastName: application.lastName,
-        trackName: application.trackName,
-        selectedTier: application.selectedTier,
-        applicationId: id,
-      });
-    } catch (emailError) {
-      console.error("Warning: Application approved but email failed:", emailError);
-      return NextResponse.json(
-        { success: true, status: updatedStatus, paymentStatus: updatedPaymentStatus, message: "Approved, but automated email failed to send." },
-        { status: 200 }
-      );
+    // Send the acceptance email (Only when selected)
+    if (statusToSet === "Selected") {
+      try {
+        await sendAcceptanceEmail({
+          to: application.email,
+          firstName: application.firstName,
+          lastName: application.lastName,
+          trackName: application.trackName,
+          applicationId: id,
+        });
+      } catch (emailError) {
+        console.error("Warning: Application approved but email failed:", emailError);
+        return NextResponse.json(
+          { success: true, status: statusToSet, message: "Approved, but automated email failed to send." },
+          { status: 200 }
+        );
+      }
     }
 
     return NextResponse.json(
-      { success: true, status: updatedStatus, paymentStatus: updatedPaymentStatus, message: "Approved and email sent" },
+      { success: true, status: statusToSet, message: `Candidate successfully marked as ${statusToSet}` },
       { status: 200 }
     );
 
   } catch (error) {
     console.error("Acceptance Error:", error);
-    return NextResponse.json({ message: "Server error during acceptance" }, { status: 500 });
+    return NextResponse.json({ message: "Server error during status update" }, { status: 500 });
   }
 }
