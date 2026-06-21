@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+@theme {
+  /* Islamabad Slate Color Scheme */
+  --color-islamabad-bg: #FAFAFA;
+  --color-islamabad-primary: #0F172A;
+  --color-islamabad-secondary: #475569;
+  --color-islamabad-accent: #059669;
+  --color-islamabad-border: #E5E7EB;
+
+  /* Enterprise Custom Shadow for Dropdowns/Modals */
+  --shadow-luxury: 0 4px 6px -1px rgba(15, 23, 42, 0.05), 
+                   0 10px 15px -3px rgba(15, 23, 42, 0.02),
+                   0 0 0 1px rgba(229, 231, 235, 0.5);
+
+  /* NEW — elevation + surface tokens, derived from existing palette */
+  --color-islamabad-surface: #FFFFFF;          /* card surface, sits above bg */
+  --color-islamabad-surface-dark: #0B1222;     /* slightly darker than primary, for glass panels */
+  --color-islamabad-accent-glow: rgba(5, 150, 105, 0.18); /* accent at low opacity for glows/lines */
+  --color-islamabad-grid-line: rgba(15, 23, 42, 0.06);    /* primary at low opacity for bg grid */
+
+  /* NEW font role — technical/mono */
+  --font-mono: var(--font-ibm-plex-mono), ui-monospace, monospace;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-islamabad-bg);
+    color: var(--color-islamabad-primary);
+    
+    /* Enterprise-grade typography rendering */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  /* High-End Text Selection */
+  ::selection {
+    background-color: var(--color-islamabad-primary);
+    color: var(--color-islamabad-bg);
+  }
+
+  /* Custom Minimalist Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-islamabad-border);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-islamabad-secondary);
+  }
+  
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
